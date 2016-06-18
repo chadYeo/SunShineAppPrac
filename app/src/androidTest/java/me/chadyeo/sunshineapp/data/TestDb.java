@@ -167,16 +167,32 @@ public class TestDb extends AndroidTestCase {
         ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
         // Insert ContentValues into database and get a row ID back
         long weatherRowId = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, weatherValues);
-        assertTrue(weatherRowId != -1);
-        // Query the database and receive a Cursor back
 
+        assertTrue(weatherRowId != -1);
+
+        // Query the database and receive a Cursor back
+        Cursor weatherCursor = db.query(
+                WeatherContract.WeatherEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
         // Move the cursor to a valid database row
+        assertTrue("Error", weatherCursor.moveToFirst());
 
         // Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
-
+        TestUtilities.validateCurrentRecord("testInsertReadDb",
+                weatherCursor, weatherValues);
         // Finally, close the cursor and database
+        assertFalse("Error", weatherCursor.moveToNext());
+
+        weatherCursor.close();
+        dbHelper.close();
     }
 
 
@@ -186,6 +202,7 @@ public class TestDb extends AndroidTestCase {
         testWeatherTable and testLocationTable.
      */
     public long insertLocation() {
-        return -1L;
+
+        return -1;
     }
 }
